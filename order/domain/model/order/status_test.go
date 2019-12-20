@@ -1,36 +1,39 @@
-package order
+package order_test
 
-import "testing"
+import (
+	"github.com/justericgg/go-ddd-coffee-shop/order/domain/model/order"
+	"testing"
+)
 
 func TestStatus_String(t *testing.T) {
 	tests := []struct {
 		name string
-		s    Status
+		s    order.Status
 		want string
 	}{
 		{
 			name: "Initial",
-			s:    Initial,
+			s:    order.Initial,
 			want: "Initial",
 		},
 		{
 			name: "Processing",
-			s:    Processing,
+			s:    order.Processing,
 			want: "Processing",
 		},
 		{
 			name: "Deliver",
-			s:    Deliver,
+			s:    order.Deliver,
 			want: "Deliver",
 		},
 		{
 			name: "Closed",
-			s:    Closed,
+			s:    order.Closed,
 			want: "Closed",
 		},
 		{
 			name: "Cancel",
-			s:    Cancel,
+			s:    order.Cancel,
 			want: "Cancel",
 		},
 	}
