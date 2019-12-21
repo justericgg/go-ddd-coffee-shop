@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const orderTableName = "Order"
+const tableName = "Order"
 
 type Item struct {
 	ProductID string
@@ -31,7 +31,7 @@ func (o OrderRepository) GenerateID() (order.ID, error) {
 	if err != nil {
 		return order.ID{}, fmt.Errorf("get conn err in GenerateID() %w", err)
 	}
-	count, err := ddbClient.Count(orderTableName)
+	count, err := ddbClient.Count(tableName)
 	if err != nil {
 		return order.ID{}, fmt.Errorf("count err in GenerateID() %w", err)
 	}
@@ -63,7 +63,7 @@ func (o OrderRepository) Save(ord *order.Order) error {
 		})
 	}
 
-	err = ddbClient.Put(orderTableName, input)
+	err = ddbClient.Put(tableName, input)
 	if err != nil {
 		return fmt.Errorf("put item err in Save() %w", err)
 	}
