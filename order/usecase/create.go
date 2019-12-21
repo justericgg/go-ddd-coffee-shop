@@ -10,23 +10,39 @@ type CreateOrderSvc struct {
 	eventPublisher EventPublisher
 }
 
-type CreateOrderCmd struct {
-	TableNo string
-	Items   []struct {
-		ProductID string
-		Qty       int
-		Price     int64
+func NewCreateOrderSvc(r order.Repository, publisher EventPublisher) *CreateOrderSvc {
+	return &CreateOrderSvc{
+		repository:     r,
+		eventPublisher: publisher,
 	}
 }
 
+type Item struct {
+	ProductID string
+	Qty       int
+	Price     int64
+}
+type CreateOrderCmd struct {
+	TableNo string
+	Items   []Item
+}
+
 func (s *CreateOrderSvc) CreateOrder(cmd CreateOrderCmd) error {
-	orderID := s.repository.GenerateID()
+	orderID, err := s.repository.GenerateID()
+	if err != nil {
+		return err
+	}
 	orderItem := make([]order.Item, 0)
 	for _, item := range cmd.Items {
 		orderItem = append(orderItem, order.NewItem(item.ProductID, item.Qty, item.Price))
 	}
 
 	ord, err := order.Create(orderID, cmd.TableNo, orderItem, time.Now())
+	if err != nil {
+		return err
+	}
+
+	err = s.repository.Save(ord)
 	if err != nil {
 		return err
 	}

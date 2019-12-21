@@ -1,6 +1,6 @@
 package order
 
 type Repository interface {
-	GenerateID() ID
-	Save(order Order)
+	GenerateID() (ID, error)
+	Save(order *Order) error
 }

@@ -41,7 +41,7 @@ func (o OrderRepository) GenerateID() (order.ID, error) {
 	return id, nil
 }
 
-func (o OrderRepository) Save(ord order.Order) error {
+func (o OrderRepository) Save(ord *order.Order) error {
 	ddbClient, err := dynamo.GetClient()
 	if err != nil {
 		return fmt.Errorf("get conn err in Save() %w", err)
