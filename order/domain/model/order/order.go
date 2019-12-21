@@ -15,11 +15,35 @@ type Order struct {
 	modifyDate time.Time
 }
 
-func Create(id ID, tableNo string, status Status, items []Item, createDate time.Time) (*Order, error) {
+func (o *Order) ModifyDate() time.Time {
+	return o.modifyDate
+}
+
+func (o *Order) CreateDate() time.Time {
+	return o.createDate
+}
+
+func (o *Order) Items() []Item {
+	return o.items
+}
+
+func (o *Order) Status() Status {
+	return o.status
+}
+
+func (o *Order) TableNo() string {
+	return o.tableNo
+}
+
+func (o *Order) ID() ID {
+	return o.id
+}
+
+func Create(id ID, tableNo string, items []Item, createDate time.Time) (*Order, error) {
 	order := &Order{
 		id:         id,
 		tableNo:    tableNo,
-		status:     status,
+		status:     Initial,
 		items:      items,
 		createDate: createDate,
 	}

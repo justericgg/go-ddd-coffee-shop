@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"sync"
 )
 
@@ -43,4 +44,23 @@ func (c *Client) Count(table string) (int64, error) {
 		return 0, err
 	}
 	return *output.Count, nil
+}
+
+func (c *Client) Put(table string, in interface{}) error {
+	item, err := dynamodbattribute.MarshalMap(in)
+	if err != nil {
+		return err
+	}
+
+	input := &dynamodb.PutItemInput{
+		Item:      item,
+		TableName: aws.String(table),
+	}
+
+	_, err = c.db.PutItem(input)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

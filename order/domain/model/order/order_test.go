@@ -10,7 +10,6 @@ func TestCreate(t *testing.T) {
 	type args struct {
 		id         order.ID
 		tableNo    string
-		status     order.Status
 		items      []order.Item
 		createDate time.Time
 	}
@@ -24,7 +23,6 @@ func TestCreate(t *testing.T) {
 			args: args{
 				id:         order.NewID(1, time.Now()),
 				tableNo:    "",
-				status:     0,
 				items:      nil,
 				createDate: time.Time{},
 			},
@@ -35,7 +33,6 @@ func TestCreate(t *testing.T) {
 			args: args{
 				id:         order.NewID(1, time.Now()),
 				tableNo:    "123",
-				status:     0,
 				items:      []order.Item{order.NewItem("1", 1, 100)},
 				createDate: time.Time{},
 			},
@@ -44,7 +41,7 @@ func TestCreate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := order.Create(tt.args.id, tt.args.tableNo, tt.args.status, tt.args.items, tt.args.createDate)
+			got, err := order.Create(tt.args.id, tt.args.tableNo, tt.args.items, tt.args.createDate)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 				return

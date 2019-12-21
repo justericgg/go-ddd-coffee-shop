@@ -9,6 +9,21 @@ import (
 
 const orderTableName = "Order"
 
+type Item struct {
+	ProductID string
+	Qty       int
+	Price     int64
+}
+
+type Schema struct {
+	OrderID   string
+	Status    int
+	TableNo   string
+	Items     []Item
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type OrderRepository struct{}
 
 func (o OrderRepository) GenerateID() (order.ID, error) {
@@ -26,6 +41,32 @@ func (o OrderRepository) GenerateID() (order.ID, error) {
 	return id, nil
 }
 
-func (o OrderRepository) Save(order order.Order) {
-	panic("implement me")
+func (o OrderRepository) Save(ord order.Order) error {
+	ddbClient, err := dynamo.GetClient()
+	if err != nil {
+		return fmt.Errorf("get conn err in Save() %w", err)
+	}
+
+	input := &Schema{
+		OrderID:   ord.ID().String(),
+		Status:    int(ord.Status()),
+		TableNo:   ord.TableNo(),
+		CreatedAt: ord.CreateDate(),
+		UpdatedAt: ord.ModifyDate(),
+	}
+
+	for _, item := range ord.Items() {
+		input.Items = append(input.Items, Item{
+			ProductID: item.ProductID(),
+			Qty:       item.Qty(),
+			Price:     item.Price(),
+		})
+	}
+
+	err = ddbClient.Put(orderTableName, input)
+	if err != nil {
+		return fmt.Errorf("put item err in Save() %w", err)
+	}
+
+	return nil
 }
