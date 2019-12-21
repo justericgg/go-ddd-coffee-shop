@@ -16,7 +16,6 @@ type Created struct {
 }
 
 func NewCreatedEvent(id, tableNo string, items []Item, createTime time.Time) Created {
-
 	eventItems := make([]EventItem, 0)
 	for _, item := range items {
 		eventItems = append(eventItems, EventItem{
