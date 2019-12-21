@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const TableName = "Coffee"
+const tableName = "Coffee"
 
 type Schema struct {
 	CoffeeID    string
@@ -24,7 +24,7 @@ func (o OrderRepository) GenerateID() (order.ID, error) {
 	if err != nil {
 		return order.ID{}, fmt.Errorf("get conn err in GenerateID() %w", err)
 	}
-	count, err := ddbClient.Count(TableName)
+	count, err := ddbClient.Count(tableName)
 	if err != nil {
 		return order.ID{}, fmt.Errorf("count err in GenerateID() %w", err)
 	}
@@ -47,7 +47,7 @@ func (o OrderRepository) Save(cof *coffee.Coffee) error {
 		CreatedAt:   cof.CreatedAt(),
 	}
 
-	err = ddbClient.Put(TableName, input)
+	err = ddbClient.Put(tableName, input)
 	if err != nil {
 		return fmt.Errorf("put item err in Save() %w", err)
 	}
