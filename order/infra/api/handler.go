@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/justericgg/go-ddd-coffee-shop/infra/event"
+	"github.com/justericgg/go-ddd-coffee-shop/infra/event/cwe"
 	"github.com/justericgg/go-ddd-coffee-shop/order/infra/repository"
 	"github.com/justericgg/go-ddd-coffee-shop/order/usecase"
 	"log"
@@ -42,7 +42,7 @@ func create(c *gin.Context) {
 		})
 	}
 
-	svc := usecase.NewCreateOrderSvc(repository.OrderRepository{}, event.Cwe{})
+	svc := usecase.NewCreateOrderSvc(repository.OrderRepository{}, cwe.GetClient())
 	err = svc.CreateOrder(cmd)
 	if err != nil {
 		log.Printf("internal server error %+v", err)

@@ -54,7 +54,7 @@ func Create(id ID, tableNo string, items []Item, createDate time.Time) (*Order, 
 		return nil, err
 	}
 
-	orderCreated := NewCreatedEvent(order.id.String(), order.tableNo, order.items)
+	orderCreated := NewCreatedEvent(order.id.String(), order.tableNo, order.items, order.createDate)
 	order.ApplyDomain(orderCreated)
 
 	return order, nil
