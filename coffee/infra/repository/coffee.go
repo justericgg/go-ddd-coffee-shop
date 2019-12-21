@@ -17,16 +17,16 @@ type Schema struct {
 	CreatedAt   time.Time
 }
 
-type OrderRepository struct{}
+type CoffeeRepository struct{}
 
-func (o OrderRepository) GenerateID() (order.ID, error) {
+func (c *CoffeeRepository) GenerateID() (coffee.ID, error) {
 	ddbClient, err := dynamo.GetClient()
 	if err != nil {
-		return order.ID{}, fmt.Errorf("get conn err in GenerateID() %w", err)
+		return coffee.ID{}, fmt.Errorf("get conn err in GenerateID() %w", err)
 	}
 	count, err := ddbClient.Count(tableName)
 	if err != nil {
-		return order.ID{}, fmt.Errorf("count err in GenerateID() %w", err)
+		return coffee.ID{}, fmt.Errorf("count err in GenerateID() %w", err)
 	}
 
 	id := order.NewID(count+1, time.Now())
@@ -34,7 +34,7 @@ func (o OrderRepository) GenerateID() (order.ID, error) {
 	return id, nil
 }
 
-func (o OrderRepository) Save(cof *coffee.Coffee) error {
+func (c *CoffeeRepository) Save(cof *coffee.Coffee) error {
 	ddbClient, err := dynamo.GetClient()
 	if err != nil {
 		return fmt.Errorf("get conn err in Save() %w", err)
