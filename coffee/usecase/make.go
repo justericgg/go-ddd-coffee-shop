@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"github.com/justericgg/go-ddd-coffee-shop/coffee/domain/model/coffee"
 	"github.com/justericgg/go-ddd-coffee-shop/coffee/domain/model/product"
 	"github.com/justericgg/go-ddd-coffee-shop/coffee/infra/repository"
@@ -13,8 +14,15 @@ type Item struct {
 }
 
 type MakeCoffeeCmd struct {
-	tableNo string
+	TableNo string
+	OrderID string
 	Items   []Item
+}
+
+type MakeCoffeeResult struct {
+	CoffeeID    string
+	ProductID   string
+	ProductName string
 }
 
 type MakeCoffeeSvc struct {
@@ -22,24 +30,40 @@ type MakeCoffeeSvc struct {
 	productRepo repository.ProductRepository
 }
 
-func (s *MakeCoffeeSvc) MakeCoffee(cmd MakeCoffeeCmd) error {
+func NewMakeCoffeeSvc(c repository.CoffeeRepository, p repository.ProductRepository) *MakeCoffeeSvc {
+	return &MakeCoffeeSvc{
+		coffeeRepo:  c,
+		productRepo: p,
+	}
+}
+
+func (s *MakeCoffeeSvc) MakeCoffee(cmd MakeCoffeeCmd) ([]MakeCoffeeResult, error) {
 	productList, err := s.productRepo.GetProductList()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	now := time.Now()
+	results := make([]MakeCoffeeResult, 0, len(cmd.Items))
 	for _, item := range cmd.Items {
-		productName := productList[product.ID(item.ProductID)]
+		productName, ok := productList[product.ID(item.ProductID)]
+		if !ok {
+			return nil, fmt.Errorf("product id %s not exists in list %v", item.ProductID, productList)
+		}
 		coffeeID, err := s.coffeeRepo.GenerateID()
 		if err != nil {
-			return err
+			return nil, fmt.Errorf("generate coffee id err in MakeCoffee %w", err)
 		}
-		c := coffee.Make(coffeeID, cmd.tableNo, productName, now)
+		c := coffee.Make(coffeeID, cmd.OrderID, cmd.TableNo, productName, now)
 		err = s.coffeeRepo.Save(c)
 		if err != nil {
-			return err
+			return nil, fmt.Errorf("save coffee err in MakeCoffee, %w", err)
 		}
+		results = append(results, MakeCoffeeResult{
+			CoffeeID:    c.ID().String(),
+			ProductID:   item.ProductID,
+			ProductName: c.ProductName(),
+		})
 	}
 
-	return nil
+	return results, nil
 }

@@ -21,13 +21,17 @@ type Client struct {
 	db *dynamodb.DynamoDB
 }
 
-func GetClient() (*Client, error) {
+func GetClient(withCredentials bool) (*Client, error) {
 	var err error
 	once.Do(func() {
-		sess, err := session.NewSession(&aws.Config{
-			Region:      aws.String(AwsRegion),
-			Credentials: credentials.NewSharedCredentials("", AwsCredProfile),
-		})
+		config := &aws.Config{Region: aws.String(AwsRegion)}
+		if withCredentials {
+			config = &aws.Config{
+				Region:      aws.String(AwsRegion),
+				Credentials: credentials.NewSharedCredentials("", AwsCredProfile),
+			}
+		}
+		sess, err := session.NewSession(config)
 		if err == nil {
 			ddbClient = &Client{db: dynamodb.New(sess)}
 		}

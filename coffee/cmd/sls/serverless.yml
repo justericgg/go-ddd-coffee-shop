@@ -1,0 +1,20 @@
+service:
+  name: go-ddd-coffee-shop-make-coffee
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-west-2
+  profile: coffee_shop
+
+functions:
+  MakeCoffee:
+    name: make-coffee
+    description: make coffee when order created
+    role: arn:aws:iam::378652145250:role/lambda_invoke_function_assume_apigw_role
+    handler: ./make_coffee
+    package:
+      include:
+        - ./make_coffee
+
+

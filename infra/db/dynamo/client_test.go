@@ -27,7 +27,7 @@ func TestClient_Count(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := dynamo.GetClient()
+			c, err := dynamo.GetClient(true)
 			if err != nil {
 				t.Fatalf("Count() err %v", err)
 			}
@@ -89,7 +89,7 @@ func TestClient_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := dynamo.GetClient()
+			c, err := dynamo.GetClient(true)
 			if err != nil {
 				t.Fatalf("Put() err %v", err)
 			}

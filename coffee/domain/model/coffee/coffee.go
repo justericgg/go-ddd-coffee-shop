@@ -8,9 +8,14 @@ import (
 type Coffee struct {
 	ddd.AggregateRoot
 	id          ID
+	orderID     string
 	tableNo     string
 	productName string
 	createdAt   time.Time
+}
+
+func (c *Coffee) OrderID() string {
+	return c.orderID
 }
 
 func (c *Coffee) CreatedAt() time.Time {
@@ -29,13 +34,14 @@ func (c *Coffee) ID() ID {
 	return c.id
 }
 
-func Make(coffeeID ID, tableNo, productName string, createAt time.Time) *Coffee {
+func Make(coffeeID ID, orderID, tableNo, productName string, createAt time.Time) *Coffee {
 
 	//TODO: Verify by policy
 	//TODO: Apply event
 
 	return &Coffee{
 		id:          coffeeID,
+		orderID:     orderID,
 		tableNo:     tableNo,
 		productName: productName,
 		createdAt:   createAt,

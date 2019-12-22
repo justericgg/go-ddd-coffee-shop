@@ -27,7 +27,7 @@ type Schema struct {
 type OrderRepository struct{}
 
 func (o OrderRepository) GenerateID() (order.ID, error) {
-	ddbClient, err := dynamo.GetClient()
+	ddbClient, err := dynamo.GetClient(true)
 	if err != nil {
 		return order.ID{}, fmt.Errorf("get conn err in GenerateID() %w", err)
 	}
@@ -42,7 +42,7 @@ func (o OrderRepository) GenerateID() (order.ID, error) {
 }
 
 func (o OrderRepository) Save(ord *order.Order) error {
-	ddbClient, err := dynamo.GetClient()
+	ddbClient, err := dynamo.GetClient(true)
 	if err != nil {
 		return fmt.Errorf("get conn err in Save() %w", err)
 	}
