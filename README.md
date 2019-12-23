@@ -1,1 +1,7 @@
-# go-ddd-coffee-shop
+# DDD Coffee Shop in Go 
+
+## Deployment
+
+### Order BC
+
+### Coffee BC
